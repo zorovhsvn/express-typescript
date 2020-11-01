@@ -1,7 +1,7 @@
 import express from "express";
-import ajax from "./ajax";
 const router = express.Router();
+import user from "./user";
 
-router.use("/ajax", ajax);
+router.use("/user", user);
 
 export default router;

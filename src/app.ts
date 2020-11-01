@@ -6,22 +6,26 @@ import bodyParser from "body-parser";
 import compression from "compression";
 import * as sequelize from "./sequelize";
 import morgan from "morgan";
+import router from "./routes";
 dotenv.config();
+const port = process.env.PORT;
 const app = express();
 
-const port = process.env.PORT;
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 app.use(session({
     resave: true,
     saveUninitialized: false,
-    secret: process.env.SESSION_SECRET
+    secret: process.env.SESSION_SECRET,
+    cookie: {
+        maxAge: 30 * 24 * 60 * 60 * 1000
+    }
 }));
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+app.use("/", router);
 
-app.use("/", require("./routes"));
-
-if(process.env.NODE_ENV === "development") {
+if (process.env.NODE_ENV === "development") {
     app.use("/assets", express.static(path.join(__dirname, "../public")));
     app.use(morgan("dev"));
 } else {
