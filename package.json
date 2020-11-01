@@ -39,7 +39,7 @@
     "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
     "build": "tsc",
     "prestart": "npm run build",
-    "start": "node .",
+    "start": "SET NODE_ENV=production && node .",
     "dev": "nodemon -e ts  --exec \"npm start\""
   },
   "repository": {
