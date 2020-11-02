@@ -1,1 +1,1 @@
-### Tăng mắt livestream facebook
+### Generate expressjs + sequelize + webpack (Typescript)
