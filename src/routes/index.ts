@@ -1,6 +1,10 @@
-import express from "express";
+import {
+    Router,
+    Request,
+    Response
+} from "express";
 import ajax from "./ajax";
-const router = express.Router();
+const router = Router();
 
 router.use("/ajax", ajax);
 

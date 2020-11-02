@@ -11,7 +11,7 @@ dotenv.config();
 const port = process.env.PORT;
 const app = express();
 
-app.set("views", path.join(__dirname, "views"));
+app.set("views", path.join(__dirname, "../views"));
 app.set("view engine", "ejs");
 app.use(session({
     resave: true,
@@ -23,8 +23,6 @@ app.use(session({
 }));
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
-app.use("/", router);
-
 if (process.env.NODE_ENV === "development") {
     app.use("/assets", express.static(path.join(__dirname, "../public")));
     app.use(morgan("dev"));
@@ -35,6 +33,7 @@ if (process.env.NODE_ENV === "development") {
     app.use(compression());
 }
 
+app.use("/", router);
 sequelize.sync().then(() => {
     app.listen(port, () => {
         console.log(`Server started at http://localhost:${port}`);
