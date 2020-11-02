@@ -22,7 +22,6 @@ export const database = new Sequelize(mysql.database, mysql.username, mysql.pass
     },
     logging: mysql.logging
 });
-
 export const sync = () => {
     return new Promise((resolve, reject) => {
         database.sync({

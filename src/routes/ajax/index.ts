@@ -3,17 +3,11 @@ import {
     Request,
     Response
 } from "express";
-const router = Router();
-import {
-    User
-} from "../../models/user.model";
 import md5 from "md5";
-import {
-    Op
-} from "sequelize";
-import {
-    Random
-} from "../../library/functions";
+import { User } from "../../models/user.model";
+import { Random } from "../../library/functions";
+const router = Router();
+
 router.get("/generate", (req: Request, res: Response) => {
     const username = req.query.username;
     const password = req.query.password;
@@ -64,37 +58,27 @@ router.post("/login", (req, res) => {
     if (username && password) {
         User.findOne({
             where: {
-                [Op.or]: [{
-                    username
-                }, {
-                    email: username
-                }]
-            }
+                username
+            },
+            rejectOnEmpty: true
         }).then((data: any) => {
-            if (data != null) {
-                if (data.password === md5(md5(password) + data.codesecurity)) {
-                    req.session.userid = data.id;
-                    req.session.username = data.username;
-                    res.json({
-                        status: 1,
-                        msg: "Đăng nhập thành công"
-                    });
-                } else {
-                    res.json({
-                        status: 0,
-                        msg: "Sai mật khẩu"
-                    });
-                }
+            if (data.password === md5(md5(password) + data.codesecurity)) {
+                req.session.userid = data.id;
+                req.session.username = data.username;
+                res.json({
+                    status: 1,
+                    msg: "Đăng nhập thành công"
+                });
             } else {
                 res.json({
                     status: 0,
-                    msg: "Không tìm thấy tài khoản"
+                    msg: "Sai mật khẩu"
                 });
             }
         }).catch(() => {
             res.json({
                 status: 0,
-                msg: "Đã xảy ra lỗi, xin vui lòng thử lại sau"
+                msg: "Không tìm thấy tài khoản"
             });
         })
     } else {

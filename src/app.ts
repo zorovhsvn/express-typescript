@@ -34,10 +34,32 @@ if (process.env.NODE_ENV === "development") {
 }
 
 app.use("/", router);
+
+// using wepack
+type ModuleId = string | number;
+interface WebpackHotModule {
+    hot?: {
+        data: any;
+        accept(
+            dependencies: string[],
+            callback?: (updatedDependencies: ModuleId[]) => void,
+        ): void;
+        accept(dependency: string, callback?: () => void): void;
+        accept(errHandler?: (err: Error) => void): void;
+        dispose(callback: (data: any) => void): void;
+    };
+}
+declare const module: WebpackHotModule;
+
 sequelize.sync().then(() => {
-    app.listen(port, () => {
+    const server = app.listen(port, () => {
         console.log(`Server started at http://localhost:${port}`);
     });
+
+    if (module.hot) {
+        module.hot.accept();
+        module.hot.dispose(() => server.close());
+    }
 }).catch((err) => {
     console.error(err);
 });
